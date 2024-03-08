@@ -34,15 +34,13 @@ class Episode extends Model implements Feedable
                        ->authorName('Frank Viola');
     }
 
-    public function getPodcastFeedItems($owner): Collection
+    public function getPodcastFeedItems($owner_slug): Collection
     {
-        if(empty($owner)) {
+        if(empty($owner_slug)) {
             return new Collection();
         }
 
-        if (is_int($owner)) {
-            $owner = Podcast::find($owner);
-        }
+        $owner = Podcast::firstWhere('slug', $owner_slug);
 
         return Episode::whereNotNull('path')->whereBelongsTo($owner)->get();
     }

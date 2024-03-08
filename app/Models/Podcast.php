@@ -12,7 +12,7 @@ class Podcast extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'description', 'website_url', 'login_url', 'username', 'password', 'markup_path'];
+    protected $fillable = ['title', 'slug', 'description', 'website_url', 'login_url', 'username', 'password', 'markup_path'];
 
     public function password(): Attribute
     {

@@ -11,7 +11,7 @@ return [
              * You can also pass an argument to that method. Note that their key must be the name of the parameter:
              * [App\Model::class, 'getAllFeedItems', 'parameterName' => 'argument']
              */
-            'items' => [\App\Models\Episode::class, 'getPodcastFeedItems', 'owner' => 2],
+            'items' => [\App\Models\Episode::class, 'getPodcastFeedItems', 'owner_slug' => 'dcln'],
 
             /*
              * The feed will be available on this url.
