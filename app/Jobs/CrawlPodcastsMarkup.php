@@ -82,6 +82,7 @@ class CrawlPodcastsMarkup implements ShouldQueue
             $dest_file_name     = Str::replace(" ", "-", $dest_file_name); // swap out dash-spaces for dashes and lower case all
             $dest_file_name     = Str::replace("’", "", $dest_file_name); // replace weird apostrophes
             $dest_file_name     = Str::replace(":", "-", $dest_file_name); // replace weird apostrophes
+            $dest_file_name     = Str::replace("?", "", $dest_file_name); // replace weird apostrophes
             $file_path          = "{$destination_config['path']}/$dest_file_name.mp3";
 
             ImportPodcastEpisode::dispatch($podcast->id, $destination_config, $title, $file_path, $lesson_url);

@@ -18,8 +18,10 @@ namespace App\Models{
  * @property int $id
  * @property string $title
  * @property int $podcast_id
+ * @property string|null $duration
+ * @property string|null $length
  * @property string $slug
- * @property string $path
+ * @property string|null $path
  * @property string $source_url
  * @property string|null $description
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -30,7 +32,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Episode query()
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Episode whereDuration($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Episode whereLength($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode wherePodcastId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereSlug($value)
@@ -38,7 +42,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereUpdatedAt($value)
  */
-	class Episode extends \Eloquent {}
+	class Episode extends \Eloquent implements \Spatie\Feed\Feedable {}
 }
 
 namespace App\Models{
@@ -47,6 +51,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $title
+ * @property string|null $slug
  * @property-read string|null $password
  * @property string|null $username
  * @property string|null $description
@@ -66,6 +71,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereLoginUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereMarkupPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereUsername($value)

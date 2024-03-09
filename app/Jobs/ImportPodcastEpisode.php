@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -40,11 +41,17 @@ class ImportPodcastEpisode implements ShouldQueue
         }
 
         $episode->fill([
-            'title'      => $this->title,
-            'slug'       => Str::slug($this->title)
+            'title' => $this->title,
+            'slug'  => Str::slug($this->title)
         ])->save();
 
-        if($episode->path && Storage::disk(config('podcasts.remote-disk'))->exists($episode->path)) {
+        if (!$episode->length
+            && $episode->path
+            && Storage::disk(config('podcasts.remote-disk'))->exists($episode->path)) {
+            $this->getMetadata(Storage::disk(config('podcasts.remote-disk'))->url($episode->path), $episode);
+        }
+
+        if ($episode->path && Storage::disk(config('podcasts.remote-disk'))->exists($episode->path)) {
             return;
         }
 
@@ -53,8 +60,26 @@ class ImportPodcastEpisode implements ShouldQueue
 
         if (!$success) {
             $this->fail(new \Exception("Could not upload {$this->file_path} to S3"));
+
+            return;
         }
 
         $episode->update(['path' => $this->file_path]);
+
+        $this->getMetadata(Storage::disk(config('podcasts.remote-disk'))->url($episode->path), $episode);
+    }
+
+    private function getMetadata(string $target_url, Episode $episode): void
+    {
+        $res = Http::get('https://mp3-metadata.andrewclinton.dev/api/metadata', [
+            'url' => Storage::disk(config('podcasts.remote-disk'))->url($episode->path)
+        ]);
+
+        if ($res->successful()) {
+            $json = $res->json();
+            $episode->update([
+                'length' => $json['data']['length'] ?? null
+            ]);
+        }
     }
 }

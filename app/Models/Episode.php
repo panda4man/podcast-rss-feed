@@ -15,7 +15,7 @@ class Episode extends Model implements Feedable
     use HasFactory;
 
     protected $fillable = [
-        'title', 'slug', 'path', 'source_url', 'description'
+        'title', 'slug', 'path', 'source_url', 'description', 'length', 'duration'
     ];
 
     public function podcast(): BelongsTo
@@ -26,17 +26,18 @@ class Episode extends Model implements Feedable
     public function toFeedItem(): FeedItem
     {
         return FeedItem::create()
-                       ->id(Storage::disk(config('podcasts.remote-disk'))->url($this->path))
+                       ->id(md5($this->slug))
                        ->title($this->title)
                        ->link(Storage::disk(config('podcasts.remote-disk'))->url($this->path))
                        ->updated($this->updated_at)
                        ->summary('tbd')
+                       ->enclosureLength($this->length ?? 22)
                        ->authorName('Frank Viola');
     }
 
     public function getPodcastFeedItems($owner_slug): Collection
     {
-        if(empty($owner_slug)) {
+        if (empty($owner_slug)) {
             return new Collection();
         }
 
