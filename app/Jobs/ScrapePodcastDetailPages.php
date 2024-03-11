@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 
-class ScrapePodcastMarkup implements ShouldQueue
+class ScrapePodcastDetailPages implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -28,9 +28,8 @@ class ScrapePodcastMarkup implements ShouldQueue
      */
     public function handle(): void
     {
-        $podcast   = Podcast::findOrFail($this->podcast_id);
-        $folder    = "podcast-{$podcast->id}";
-        $file      = "$folder/content.html";
+        $podcast = Podcast::findOrFail($this->podcast_id);
+        $folder  = $podcast->htmlFolder();
 
         $client    = new Client();
         $cookieJar = new CookieJar();
@@ -54,14 +53,37 @@ class ScrapePodcastMarkup implements ShouldQueue
             return;
         }
 
-        $response2 = $client->get($podcast->website_url, [
-            'allow_redirects' => true, 'cookies' => $cookieJar
+        $page     = 1;
+        $base_url = 'https://www.thedeeperchristianlife.com/category/masterclass/';
+        $url      = $base_url;
+
+        $response2 = $client->get($url, [
+            'allow_redirects' => ['track_redirects' => true], 'cookies' => $cookieJar
         ]);
 
-        $res = Storage::disk(config('podcasts.disk'))->put($file, $response2->getBody()->getContents());
+        $fetched_paths = [];
 
-        if($res) {
-            $podcast->update(['markup_path' => $file]);
+        while (empty($response2->getHeader(\GuzzleHttp\RedirectMiddleware::HISTORY_HEADER))) {
+            if ($response2->getStatusCode() >= 200 && $response2->getStatusCode() <= 299) {
+                $file = "$folder/content-detail-page-$page.html";
+                $res  = Storage::disk(config('podcasts.disk'))->put($file, $response2->getBody()->getContents());
+
+                if ($res) {
+                    $fetched_paths[] = $file;
+                }
+            }
+
+            $page++;
+
+            if ($page > 1) {
+                $url = "$base_url" . "page/$page/";
+            }
+
+            $response2 = $client->get($url, [
+                'allow_redirects' => ['track_redirects' => true], 'cookies' => $cookieJar
+            ]);
         }
+
+        $podcast->update(['markup_detail_paths' => $fetched_paths]);
     }
 }

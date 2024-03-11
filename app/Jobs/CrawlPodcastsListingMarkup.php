@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CrawlPodcastsMarkup implements ShouldQueue
+class CrawlPodcastsListingMarkup implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -30,7 +30,7 @@ class CrawlPodcastsMarkup implements ShouldQueue
     public function handle(): void
     {
         $podcast  = Podcast::findOrFail($this->podcast_id);
-        $contents = Storage::disk(config('podcasts.disk'))->get($podcast->markup_path);
+        $contents = Storage::disk(config('podcasts.disk'))->get($podcast->markup_listing_path);
         $crawler  = new Crawler($contents);
         $nodes    = $crawler->filter('p');
 

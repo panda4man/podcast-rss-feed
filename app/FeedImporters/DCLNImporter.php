@@ -2,8 +2,10 @@
 
 namespace App\FeedImporters;
 
-use App\Jobs\CrawlPodcastsMarkup;
-use App\Jobs\ScrapePodcastMarkup;
+use App\Jobs\CrawlPodcastDetailPages;
+use App\Jobs\CrawlPodcastsListingMarkup;
+use App\Jobs\ScrapePodcastDetailPages;
+use App\Jobs\ScrapePodcastListingMarkup;
 use App\Models\Podcast;
 use Illuminate\Support\Facades\Bus;
 
@@ -15,8 +17,10 @@ class DCLNImporter implements ImporterContract
         $podcast = Podcast::find(2);
 
         Bus::chain([
-            new ScrapePodcastMarkup($podcast->id),
-            new CrawlPodcastsMarkup($podcast->id)
+            new ScrapePodcastListingMarkup($podcast->id),
+            new CrawlPodcastsListingMarkup($podcast->id),
+            new ScrapePodcastDetailPages($podcast->id),
+            new CrawlPodcastDetailPages($podcast->id)
         ])->dispatch();
     }
 }

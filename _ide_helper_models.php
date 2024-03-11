@@ -24,6 +24,7 @@ namespace App\Models{
  * @property string|null $path
  * @property string $source_url
  * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $published_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Podcast $podcast
@@ -37,6 +38,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereLength($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode wherePodcastId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Episode wherePublishedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereSourceUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Episode whereTitle($value)
@@ -57,7 +59,8 @@ namespace App\Models{
  * @property string|null $description
  * @property string|null $website_url
  * @property string|null $login_url
- * @property string|null $markup_path
+ * @property string|null $markup_listing_path
+ * @property array|null $markup_detail_paths
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Episode> $episodes
@@ -69,7 +72,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereLoginUrl($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereMarkupPath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereMarkupDetailPaths($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereMarkupListingPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Podcast whereTitle($value)

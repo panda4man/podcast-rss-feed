@@ -12,7 +12,13 @@ class Podcast extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'slug', 'description', 'website_url', 'login_url', 'username', 'password', 'markup_path'];
+    protected $fillable = [
+        'title', 'slug', 'description', 'website_url', 'login_url', 'username', 'password', 'markup_listing_path', 'markup_detail_paths'
+    ];
+
+    protected $casts = [
+        'markup_detail_paths' => 'array'
+    ];
 
     public function password(): Attribute
     {
@@ -24,5 +30,10 @@ class Podcast extends Model
     public function episodes(): HasMany
     {
         return $this->hasMany(Episode::class);
+    }
+
+    public function htmlFolder(): string
+    {
+        return "podcast-{$this->id}";
     }
 }
